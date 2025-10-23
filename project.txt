@@ -1,0 +1,6 @@
+lm studio : run llms
+olama : run LLMs
+IAM user name : pythonbackend
+S3 bucket : projectinternshipbucket
+ipv4 : 3.87.179.40
+

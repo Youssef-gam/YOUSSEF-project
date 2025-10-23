@@ -1,0 +1,6 @@
+# Sensitive files
+scp -i CUsersyoussDownloadsn8n-key1.txt
+
+# Non-source files (optional, keep if needed)
+*.docx
+*.pdf

@@ -1,0 +1,72 @@
+
+
+
+ssh -i "C:\Users\youss\Downloads\n8n-key1.pem" ubuntu@44.202.2.68: command to access ec2 
+docker run -d --restart unless-stopped \
+  --name n8n \
+  -p 5678:5678 \
+  -v ~/.n8n:/home/node/.n8n \
+  -e N8N_BASIC_AUTH_ACTIVE=true \
+  -e N8N_BASIC_AUTH_USER=admin \
+  -e N8N_BASIC_AUTH_PASSWORD=admin123 \v
+  n8nio/n8n
+
+docker stop flask-cv-app2
+docker rm flask-cv-app2
+docker build -t flask-cv-app .
+docker run -d -p 5123:5000 --name flask-cv-app2 --env-file .env flask-cv-app
+
+
+
+
+command to start n8n locally : docker run -it --rm --name n8n -p 5678:5678 -e N8N_SECURE_COOKIE=false -v n8n_data:/home/node/.n8n docker.n8n.io/n8nio/n8n
+
+
+things that demands access key id and secret access key : python , n8n (search a bucket) , aws keys , n8n(download a file)
+
+
+OLLAMA_HOST=0.0.0.0 ollama serve > ~/ollama.log 2>&1 &
+
+
+VVPJ5IAJRM7IKIA7TGAM7YWDDJRAVOV5
+
+
+
+
+docker run -it --rm -p 8000:8000 -v ~/fastapi-app/db:/app/db fastapi-app
+
+copy from Windows to Ubuntu : scp -i "C:\Users\youss\Downloads\n8n-key1.pem" -r C:\Users\youss\OneDrive\Bureau\fastapi\alembic ubuntu@54.173.242.145:/home/ubuntu/fastapi-app/
+
+
+
+codes ngrok : 536RS9W57P
+87JEA2U5RP
+J6GGQSTFCK
+SQYPH8PSCC
+7RCTMD8N7S
+3UJ4AJTDCQ
+CAWSBDMGZR
+6MMD57CHQQ
+S9NRQ6H4XH
+D9C59J393A
+
+
+
+
+things to change : (backend , frontend , n8n ( aws ) , .env , )
+
+
+
+first function node: // Grab the raw text from previous node
+const aiText = $json["response"]; // adjust key if needed
+
+// Optional: extract score using regex
+const scoreMatch = aiText.match(/Score:\s*(\d+)/);
+const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
+
+return [{
+  json: {
+    score: score,
+    feedback: aiText
+  }
+}];

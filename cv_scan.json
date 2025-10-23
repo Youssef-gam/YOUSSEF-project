@@ -1,0 +1,124 @@
+{
+  "name": "CV Scan and Email Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-test/1d91fb1e-ff37-41ba-bf8c-de969b185078",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "genericCredentialType",
+        "genericAuthType": "aws",
+        "bucket": "projectinternshipbucket",
+        "path": "={{ $node['Webhook'].json['cv_url'].split('/').slice(-2).join('/') }}",
+        "operation": "download"
+      },
+      "id": "2",
+      "name": "AWS S3",
+      "type": "n8n-nodes-base.awsS3",
+      "typeVersion": 1,
+      "position": [460, 300],
+      "credentials": {
+        "aws": "AWS Credentials"
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "fileType": "pdf"
+      },
+      "id": "3",
+      "name": "Convert to Text",
+      "type": "n8n-nodes-base.convertToText",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "prompt": "Analyze the following CV text and extract the candidate's first name, email, and relevant skills. Score the CV out of 100 based on the following criteria:\n- Relevant skills for the field '{{ $node['Webhook'].json['field'] }}' (50% weight)\n- Education (20% weight)\n- Work experience (20% weight)\n- Certifications (10% weight)\nReturn a JSON object with: firstName, email, skills (array), score (number), and reasoning (string explaining the score). CV text: {{ $node['Convert to Text'].json['text'] }}",
+        "options": {}
+      },
+      "id": "4",
+      "name": "OpenAI",
+      "type": "n8n-nodes-base.openAI",
+      "typeVersion": 1,
+      "position": [900, 300],
+      "credentials": {
+        "openAIApi": "OpenAI API"
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "send",
+        "fromEmail": "youssefgammar04@gmail.com",
+        "toEmail": "youssefgammar04@gmail.com",
+        "subject": "Candidate CV Score",
+        "text": "=Candidate: {{ $node['OpenAI'].json['firstName'] }}\nEmail: {{ $node['OpenAI'].json['email'] }}\nField: {{ $node['Webhook'].json['field'] }}\nScore: {{ $node['OpenAI'].json['score'] }}/100\nReasoning: {{ $node['OpenAI'].json['reasoning'] }}"
+      },
+      "id": "5",
+      "name": "Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 1,
+      "position": [1120, 300],
+      "credentials": {
+        "gmailOAuth2": "Gmail OAuth2"
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AWS S3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AWS S3": {
+      "main": [
+        [
+          {
+            "node": "Convert to Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Text": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
